@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Mapping, Sequence, TypeVar
 import pandas as pd
-from .schemas import ColumnProfile, ProfileResult, QualityAssessment, QualityRule, QualityScore,
+from .schemas import ColumnProfile, ProfileResult, QualityAssessment, QualityRule, QualityScore
 
 T = TypeVar("T")
 
@@ -35,7 +35,12 @@ class PandasProfiler(Profiler[pd.DataFrame]):
 
     def profile(self, data: pd.DataFrame) -> ProfileResult:
         """Calculate null counts, types, ranges, distinct counts, and duplicates."""
-        raise NotImplementedError
+        return ProfileResult(
+            row_count=len(data),
+            column_count=len(data.columns),
+            duplicate_count=int(data.duplicated().sum()),
+            columns=[self._profile_column(data[column]) for column in data.columns],
+        )
 
     def score(self, data: pd.DataFrame, profile: ProfileResult | None = None) -> QualityAssessment:
         """Calculate dimension and overall scores; profile first if needed."""
@@ -46,8 +51,19 @@ class PandasProfiler(Profiler[pd.DataFrame]):
         raise NotImplementedError
 
     def _profile_column(self, column: pd.Series) -> ColumnProfile:
-        """Calculate descriptive statistics for one column."""
-        raise NotImplementedError
+        """Profile one column, treating nulls and blank strings as missing."""
+        blank = column.map(lambda value: isinstance(value, str) and not value.strip())
+        missing = column.isna() | blank
+        values = column[~missing]
+        numeric = pd.api.types.is_numeric_dtype(column) and not values.empty
+        return ColumnProfile(
+            name=str(column.name),
+            dtype=str(column.dtype),
+            null_count=int(missing.sum()),
+            distinct_count=int(values.nunique()),
+            minimum=float(values.min()) if numeric else None,
+            maximum=float(values.max()) if numeric else None,
+        )
 
     def _score_completeness(self, data: pd.DataFrame, profile: ProfileResult) -> QualityScore:
         """Measure the proportion of required values present."""
@@ -68,4 +84,3 @@ class PandasProfiler(Profiler[pd.DataFrame]):
     def _score_validity(self, data: pd.DataFrame) -> QualityScore:
         """Measure the proportion of evaluated value constraints satisfied."""
         raise NotImplementedError
-
