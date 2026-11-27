@@ -29,13 +29,6 @@ class ProfileResult:
 
 @dataclass(frozen=True)
 class QualityRule:
-    """One boolean result per row; null means the check could not be evaluated.
-
-    Evaluators receive the dataset and named trusted reference frames. They
-    must preserve the dataset index. Configure freshness cutoffs explicitly
-    in timeliness evaluators; no clock or business rules are inferred.
-    """
-
     name: str
     dimension: QualityDimension
     evaluate: Callable[["pd.DataFrame", Mapping[str, "pd.DataFrame"]], "pd.Series"]
