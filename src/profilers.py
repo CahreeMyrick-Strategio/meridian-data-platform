@@ -14,8 +14,8 @@ class Profiler(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    def score(self, data: T, profile: ProfileResult | None = None) -> QualityAssessment:
-        """Score data quality, optionally reusing a profile of the same data."""
+    def score(self, data: T) -> QualityAssessment:
+        """Score data quality."""
         pass
 
     @abstractmethod
@@ -61,19 +61,17 @@ class PandasProfiler(Profiler[pd.DataFrame]):
             columns=[self._profile_column(data[column]) for column in data.columns],
         )
 
-    def score(self, data: pd.DataFrame, profile: ProfileResult | None = None) -> QualityAssessment:
-        """Calculate dimension and overall scores; profile first if needed."""
+    def score(self, data: pd.DataFrame) -> QualityAssessment:
+        """Calculate dimension and overall scores."""
         if not data.columns.is_unique:
             raise ValueError("Quality assessment requires unique column names.")
-        if profile is None:
-            profile = self.profile(data)
         self._violations = []
         scores = {
-            "completeness": self._score_completeness(data, profile),
-            "consistency": self._score_consistency(data),
-            "accuracy": self._score_accuracy(data),
-            "timeliness": self._score_timeliness(data),
-            "validity": self._score_validity(data),
+            "completeness": self._score_completeness(data),
+            "consistency": self._score_rules(data, "consistency"),
+            "accuracy": self._score_rules(data, "accuracy"),
+            "timeliness": self._score_rules(data, "timeliness"),
+            "validity": self._score_rules(data, "validity"),
         }
         active_weight = sum(self.weights.values())
         assessed_weight = sum(self.weights[d] for d, s in scores.items() if s.score is not None)
@@ -89,7 +87,7 @@ class PandasProfiler(Profiler[pd.DataFrame]):
     def assess(self, data: pd.DataFrame) -> ProfileResult:
         """Run profile and score once each, attaching quality to the profile."""
         result = self.profile(data)
-        result.quality = self.score(data, result)
+        result.quality = self.score(data)
         return result
 
     def _profile_column(self, column: pd.Series) -> ColumnProfile:
@@ -107,7 +105,7 @@ class PandasProfiler(Profiler[pd.DataFrame]):
             maximum=float(values.max()) if numeric else None,
         )
 
-    def _score_completeness(self, data: pd.DataFrame, profile: ProfileResult) -> QualityScore:
+    def _score_completeness(self, data: pd.DataFrame) -> QualityScore:
         """Measure required values present, including absent columns and blanks."""
         score = self._score_rules(data, "completeness")
         for column in self.required_columns:
@@ -119,22 +117,6 @@ class PandasProfiler(Profiler[pd.DataFrame]):
                 present = values.notna() & ~blank
             self._record(data, score, "completeness", f"required:{column}", present)
         return score
-
-    def _score_consistency(self, data: pd.DataFrame) -> QualityScore:
-        """Measure the proportion of evaluated consistency checks passed."""
-        return self._score_rules(data, "consistency")
-
-    def _score_accuracy(self, data: pd.DataFrame) -> QualityScore:
-        """Measure agreement with the configured trusted references."""
-        return self._score_rules(data, "accuracy")
-
-    def _score_timeliness(self, data: pd.DataFrame) -> QualityScore:
-        """Measure compliance with explicitly configured freshness rules."""
-        return self._score_rules(data, "timeliness")
-
-    def _score_validity(self, data: pd.DataFrame) -> QualityScore:
-        """Measure the proportion of evaluated value constraints satisfied."""
-        return self._score_rules(data, "validity")
 
     def _score_rules(self, data: pd.DataFrame, dimension: str) -> QualityScore:
         """Evaluate only the rules configured for the requested dimension."""
