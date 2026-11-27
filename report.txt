@@ -1,0 +1,288 @@
+Source: meridian_reference_data.csv
+DATA PROFILING REPORT
+========================================
+Rows: 30
+Columns: 8
+Duplicate rows: 0
+
+Column: instrument_id
+  Data type: str
+  Null count: 0
+  Distinct count: 30
+  Minimum: None
+  Maximum: None
+
+Column: instrument_name
+  Data type: str
+  Null count: 0
+  Distinct count: 30
+  Minimum: None
+  Maximum: None
+
+Column: asset_class
+  Data type: str
+  Null count: 0
+  Distinct count: 3
+  Minimum: None
+  Maximum: None
+
+Column: instrument_type
+  Data type: str
+  Null count: 0
+  Distinct count: 3
+  Minimum: None
+  Maximum: None
+
+Column: trading_venue
+  Data type: str
+  Null count: 0
+  Distinct count: 4
+  Minimum: None
+  Maximum: None
+
+Column: issuer
+  Data type: str
+  Null count: 0
+  Distinct count: 30
+  Minimum: None
+  Maximum: None
+
+Column: currency
+  Data type: str
+  Null count: 0
+  Distinct count: 1
+  Minimum: None
+  Maximum: None
+
+Column: status
+  Data type: str
+  Null count: 0
+  Distinct count: 1
+  Minimum: None
+  Maximum: None
+
+QUALITY DIMENSIONS
+Overall: 100.00/100
+Coverage: 100.00%
+Completeness: 100.00% (30/30)
+Consistency: 100.00% (30/30)
+Accuracy: Unassessed
+Timeliness: Unassessed
+Validity: Unassessed
+Failed checks: 0
+Source: meridian_trades_small.csv
+DATA PROFILING REPORT
+========================================
+Rows: 1000
+Columns: 9
+Duplicate rows: 0
+
+Column: trade_id
+  Data type: str
+  Null count: 0
+  Distinct count: 952
+  Minimum: None
+  Maximum: None
+
+Column: instrument_id
+  Data type: str
+  Null count: 88
+  Distinct count: 30
+  Minimum: None
+  Maximum: None
+
+Column: instrument_type
+  Data type: str
+  Null count: 0
+  Distinct count: 3
+  Minimum: None
+  Maximum: None
+
+Column: trade_date
+  Data type: str
+  Null count: 0
+  Distinct count: 535
+  Minimum: None
+  Maximum: None
+
+Column: buyer
+  Data type: str
+  Null count: 11
+  Distinct count: 20
+  Minimum: None
+  Maximum: None
+
+Column: seller
+  Data type: str
+  Null count: 22
+  Distinct count: 20
+  Minimum: None
+  Maximum: None
+
+Column: quantity
+  Data type: int64
+  Null count: 0
+  Distinct count: 987
+  Minimum: 167.0
+  Maximum: 49952.0
+
+Column: price
+  Data type: float64
+  Null count: 0
+  Distinct count: 990
+  Minimum: -497.46
+  Maximum: 499.76
+
+Column: trade_status
+  Data type: str
+  Null count: 0
+  Distinct count: 5
+  Minimum: None
+  Maximum: None
+
+QUALITY DIMENSIONS
+Overall: 98.31/100 (partial)
+Coverage: 98.08%
+Completeness: 98.66% (8879/9000)
+Consistency: 95.21% (3777/3967)
+Accuracy: 100.00% (912/912)
+Timeliness: 100.00% (1000/1000)
+Validity: 97.68% (9768/10000)
+Failed checks: 543
+  completeness: required:instrument_id: 88 failed
+  completeness: required:buyer: 11 failed
+  completeness: required:seller: 22 failed
+  consistency: unique_trade_id: 94 failed
+  consistency: different_participants: 33 unevaluated
+  consistency: ISO_date_format: 96 failed
+  accuracy: instrument_type_matches_master: 88 unevaluated
+  validity: instrument_id_format: 88 failed
+  validity: buyer_is_text: 11 failed
+  validity: seller_is_text: 22 failed
+  validity: instrument_exists_in_master: 88 failed
+  validity: positive_finite_price: 23 failed
+Timeliness assumes the historical reporting period 2025-01-01 to 2026-06-30, inclusive.
+Accuracy checks instrument types against the master.
+Source: meridian_trades_small.json
+DATA PROFILING REPORT
+========================================
+Rows: 1000
+Columns: 9
+Duplicate rows: 0
+
+Column: tradeReference
+  Data type: str
+  Null count: 0
+  Distinct count: 952
+  Minimum: None
+  Maximum: None
+
+Column: executionDate
+  Data type: str
+  Null count: 0
+  Distinct count: 535
+  Minimum: None
+  Maximum: None
+
+Column: security.securityCode
+  Data type: str
+  Null count: 88
+  Distinct count: 30
+  Minimum: None
+  Maximum: None
+
+Column: security.securityType
+  Data type: str
+  Null count: 0
+  Distinct count: 3
+  Minimum: None
+  Maximum: None
+
+Column: counterparties.buyingFirm
+  Data type: str
+  Null count: 11
+  Distinct count: 20
+  Minimum: None
+  Maximum: None
+
+Column: counterparties.sellingFirm
+  Data type: str
+  Null count: 22
+  Distinct count: 20
+  Minimum: None
+  Maximum: None
+
+Column: tradeDetails.units
+  Data type: int64
+  Null count: 0
+  Distinct count: 987
+  Minimum: 167.0
+  Maximum: 49952.0
+
+Column: tradeDetails.executionPrice
+  Data type: float64
+  Null count: 0
+  Distinct count: 990
+  Minimum: -497.46
+  Maximum: 499.76
+
+Column: tradeDetails.settlementStatus
+  Data type: str
+  Null count: 0
+  Distinct count: 5
+  Minimum: None
+  Maximum: None
+
+QUALITY DIMENSIONS
+Overall: 98.31/100 (partial)
+Coverage: 98.08%
+Completeness: 98.66% (8879/9000)
+Consistency: 95.21% (3777/3967)
+Accuracy: 100.00% (912/912)
+Timeliness: 100.00% (1000/1000)
+Validity: 97.68% (9768/10000)
+Failed checks: 543
+  completeness: required:security.securityCode: 88 failed
+  completeness: required:counterparties.buyingFirm: 11 failed
+  completeness: required:counterparties.sellingFirm: 22 failed
+  consistency: unique_trade_id: 94 failed
+  consistency: different_participants: 33 unevaluated
+  consistency: ISO_date_format: 96 failed
+  accuracy: instrument_type_matches_master: 88 unevaluated
+  validity: instrument_id_format: 88 failed
+  validity: buyer_is_text: 11 failed
+  validity: seller_is_text: 22 failed
+  validity: instrument_exists_in_master: 88 failed
+  validity: positive_finite_price: 23 failed
+Timeliness assumes the historical reporting period 2025-01-01 to 2026-06-30, inclusive.
+Accuracy checks instrument types against the master.
+Source: CSV/JSON comparison (one dataset-level evaluation per rule)
+DATA PROFILING REPORT
+========================================
+Rows: 1
+Columns: 2
+Duplicate rows: 0
+
+Column: equal_record_counts
+  Data type: bool
+  Null count: 0
+  Distinct count: 1
+  Minimum: 1.0
+  Maximum: 1.0
+
+Column: matching_records
+  Data type: bool
+  Null count: 0
+  Distinct count: 1
+  Minimum: 1.0
+  Maximum: 1.0
+
+QUALITY DIMENSIONS
+Overall: 100.00/100
+Coverage: 100.00%
+Completeness: Unassessed
+Consistency: 100.00% (2/2)
+Accuracy: Unassessed
+Timeliness: Unassessed
+Validity: Unassessed
+Failed checks: 0
