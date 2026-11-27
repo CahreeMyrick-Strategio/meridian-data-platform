@@ -117,8 +117,6 @@ Both exports contain the same 1,000 trades and produce the same results:
 - All 912 populated instrument IDs match the master's instrument types. Missing IDs leave 88 accuracy checks unassessed; missing counterparties prevent 33 buyer/seller comparisons.
 - Master-key quality and CSV/JSON agreement each score 100/100 under their configured checks.
 
-Findings can overlap within a record. The two exports represent the same trades, so their issue counts should not be added together.
-
 ## Business Summary
 
 The exports agree, but they share defects that can disrupt reconciliation: missing instrument and counterparty details, repeated trade IDs, inconsistent date formats, and negative prices.
