@@ -62,6 +62,7 @@ class QualityScore:
 
     @property
     def coverage(self) -> float | None:
+        """Return evaluated/expected checks, or None when unconfigured."""
         return self.evaluated / self.expected if self.expected else None
 
 
@@ -75,12 +76,11 @@ class QualityViolation:
 
 
 @dataclass
-class QualityAssesment:
+class QualityAssessment:
     dimensions: dict[str, QualityScore]
     weights: dict[str, float]
     overall_score: float | None
     coverage: float
     partial: bool
     violations: list[QualityViolation] = field(default_factory=list)
-
 
