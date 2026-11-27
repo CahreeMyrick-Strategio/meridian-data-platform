@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, Literal, Mapping, TYPE_CHECKING
+from typing import Callable, Literal, Mapping
 import pandas as pd
 
 QualityDimension = Literal["completeness", "consistency", "accuracy", "timeliness", "validity"]
@@ -9,14 +9,6 @@ QualityDimension = Literal["completeness", "consistency", "accuracy", "timelines
 class FileSource:
     path: Path
     format: Literal["csv", "json"]
-
-@dataclass(frozen=True)
-class DatabaseSource:
-    pass
-
-@dataclass(frozen=True)
-class S3Source:
-    pass
 
 @dataclass
 class ColumnProfile:

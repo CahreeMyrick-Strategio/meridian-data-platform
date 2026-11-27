@@ -51,28 +51,17 @@ class TextReportGenerator(ReportGenerator):
                 lines.append(f"  {dimension}: {rule}: {count} {'unevaluated' if unavailable else 'failed'}")
         return "\n".join(lines)
 
-class MarkdownReportGenerator(ReportGenerator):
-    pass
-
-class AIReportGenerator(ReportGenerator):
-    pass
-
-
 def generate_report(result: ProfileResult, format: str = "text") -> str:
     """Select a reporter by format and render a structured profile result.
 
-    Text is currently implemented. Markdown and AI reporting are reserved
-    formats until their reporter implementations are available.
+    Text is the supported report format.
 
     Raises:
-        NotImplementedError: If a requested reporter is still a placeholder.
         ValueError: If the format is unknown.
     """
     match format:
         case "text":
             reporter = TextReportGenerator()
-        case "markdown" | "ai":
-            raise NotImplementedError(f"The {format} reporter is not implemented yet.")
         case _:
             raise ValueError(f"Unsupported report format: {format}. Available formats: 'text'.")
 
